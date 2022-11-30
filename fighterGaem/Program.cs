@@ -32,9 +32,14 @@ Texture2D planeDownLeft = Raylib.LoadTexture("img/FighterDownLeft.png");
 Rectangle backRect = new Rectangle(screen.width / 2 - backG.width / 2, screen.height / 2 - backG.height / 2, backG.width, backG.height);
 Rectangle planeRect = new Rectangle(screen.width / 2 - plane.width / 2, screen.height / 2 - plane.height / 2, plane.width, plane.height);
 
-Texture2D projectile = Raylib.LoadTexture("img/tracer_1.png");
-Rectangle projectileRect = new Rectangle(planeRect.x, planeRect.y, projectile.width, projectile.height);
+Texture2D projectileUp = Raylib.LoadTexture("img/tracerUpDown.png");
+Rectangle projectileRect = new Rectangle(planeRect.x, planeRect.y, projectileUp.width, projectileUp.height);
+Texture2D projectileRightUp = Raylib.LoadTexture("img/tracerRightDownLeft.png");
+Texture2D projectileLeftUp = Raylib.LoadTexture("img/tracerLeftDownRight.png");
+Texture2D projectileSide = Raylib.LoadTexture("img/tracerRightLeft.png");
+int showProjectile = -1;
 int projectileSpeed = 10;
+Vector2 dirProjectile = Vector2.UnitX;
 
 int speed = 5;
 string currentScene = "start";
@@ -103,8 +108,19 @@ while (!Raylib.WindowShouldClose())
         // attack
         if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
         {
-            projectileRect.x += dir.X * projectileSpeed;
-            projectileRect.y += dir.Y * projectileSpeed;
+            showProjectile *= -1;
+            dirProjectile.X = dir.X;
+            dirProjectile.Y = dir.Y;
+        }
+        if(showProjectile == 1)
+        {
+            projectileRect.x += dirProjectile.X * projectileSpeed;
+            projectileRect.y += dirProjectile.Y * projectileSpeed;
+        }
+        else if (showProjectile == -1)
+        {
+            projectileRect.x = planeRect.x;
+            projectileRect.y = planeRect.y;
         }
 
     }
@@ -145,7 +161,7 @@ while (!Raylib.WindowShouldClose())
     else if (currentScene == "game")
     {
 
-        if (dir.Y == -1 && dir.X == -1) // ----------------------------------------------------- Diagonal 
+        if (dir.Y == -1 && dir.X == -1) // ----------------------------------------------------- Diagonal Plaen
         {
             Raylib.DrawTexture(planeUpLeft, (int)planeRect.x, (int)planeRect.y, Color.WHITE);
         }
@@ -178,10 +194,25 @@ while (!Raylib.WindowShouldClose())
             Raylib.DrawTexture(planeRight, (int)planeRect.x, (int)planeRect.y, Color.WHITE);
         }
 
-        // attack
-        if (Raylib.IsKeyDown(KeyboardKey.KEY_SPACE))
+        // attack grafik
+        if (showProjectile == 1)
         {
-            Raylib.DrawTexture(projectile, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
+            if(dirProjectile.Y != 0 && dirProjectile.X == 0)
+            {
+                Raylib.DrawTexture(projectileUp, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
+            }
+            else if(dirProjectile.Y == 0 && dirProjectile.X != 0)
+            {
+                Raylib.DrawTexture(projectileSide, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
+            }
+            else if(dirProjectile.Y == 1 && dirProjectile.X == 1 || dirProjectile.Y == -1 && dirProjectile.X == -1)
+            {
+                Raylib.DrawTexture(projectileLeftUp, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
+            }
+            else if(dirProjectile.Y == 1 && dirProjectile.X == -1 || dirProjectile.Y == -1 && dirProjectile.X == 1)
+            {
+                Raylib.DrawTexture(projectileRightUp, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
+            }
         }
 
     }

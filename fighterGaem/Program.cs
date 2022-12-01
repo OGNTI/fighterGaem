@@ -16,7 +16,7 @@ using System.Numerics;
 // if all keys released, plaen keeps going the last direction it was going
 
 
-Rectangle screen = new Rectangle(0, 0, 1000, 800);
+Rectangle screen = new Rectangle(0, 0, 1000, 1000);
 Raylib.InitWindow((int)screen.width, (int)screen.height, "Gaem");
 Raylib.SetTargetFPS(60);
 
@@ -33,17 +33,18 @@ Rectangle backRect = new Rectangle(screen.width / 2 - backG.width / 2, screen.he
 Rectangle planeRect = new Rectangle(screen.width / 2 - plane.width / 2, screen.height / 2 - plane.height / 2, plane.width, plane.height);
 
 Texture2D projectileUp = Raylib.LoadTexture("img/tracerUpDown.png");
-Rectangle projectileRect = new Rectangle(planeRect.x, planeRect.y, projectileUp.width, projectileUp.height);
 Texture2D projectileRightUp = Raylib.LoadTexture("img/tracerRightDownLeft.png");
 Texture2D projectileLeftUp = Raylib.LoadTexture("img/tracerLeftDownRight.png");
 Texture2D projectileSide = Raylib.LoadTexture("img/tracerRightLeft.png");
-int showProjectile = -1;
+Rectangle projectileRect = new Rectangle(planeRect.x, planeRect.y, projectileUp.width, projectileUp.height);
 int projectileSpeed = 10;
 Vector2 dirProjectile = Vector2.UnitX;
 
 int speed = 5;
 string currentScene = "start";
 Vector2 dir = Vector2.UnitX;
+
+List<Projectile> projects = new List<Projectile>();
 
 
 while (!Raylib.WindowShouldClose())
@@ -106,21 +107,15 @@ while (!Raylib.WindowShouldClose())
         backRect.x -= dir.X * speed;
 
         // attack
-        if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
+        if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT))
         {
-            showProjectile *= -1;
+            projects.Add(new Projectile(projectileRect));
             dirProjectile.X = dir.X;
             dirProjectile.Y = dir.Y;
         }
-        if(showProjectile == 1)
+        foreach (Projectile p in projects)
         {
-            projectileRect.x += dirProjectile.X * projectileSpeed;
-            projectileRect.y += dirProjectile.Y * projectileSpeed;
-        }
-        else if (showProjectile == -1)
-        {
-            projectileRect.x = planeRect.x;
-            projectileRect.y = planeRect.y;
+            p.rect.y += projectileSpeed * dirProjectile.Y;
         }
 
     }
@@ -160,8 +155,7 @@ while (!Raylib.WindowShouldClose())
     }
     else if (currentScene == "game")
     {
-
-        if (dir.Y == -1 && dir.X == -1) // ----------------------------------------------------- Diagonal Plaen
+        if (dir.Y == -1 && dir.X == -1) // Diagonal Plaen
         {
             Raylib.DrawTexture(planeUpLeft, (int)planeRect.x, (int)planeRect.y, Color.WHITE);
         }
@@ -177,7 +171,7 @@ while (!Raylib.WindowShouldClose())
         {
             Raylib.DrawTexture(planeDownRight, (int)planeRect.x, (int)planeRect.y, Color.WHITE);
         }
-        else if (dir.Y == -1 && dir.X == 0) // ------------------------------------------------- vertical / horizontal
+        else if (dir.Y == -1 && dir.X == 0) // vertical / horizontal
         {
             Raylib.DrawTexture(plane, (int)planeRect.x, (int)planeRect.y, Color.WHITE);
         }
@@ -195,24 +189,29 @@ while (!Raylib.WindowShouldClose())
         }
 
         // attack grafik
-        if (showProjectile == 1)
+        // if (showProjectile == 1)
+        // {
+        //     if(dirProjectile.Y != 0 && dirProjectile.X == 0)
+        //     {
+        //         Raylib.DrawTexture(projectileUp, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
+        //     }
+        //     else if(dirProjectile.Y == 0 && dirProjectile.X != 0)
+        //     {
+        //         Raylib.DrawTexture(projectileSide, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
+        //     }
+        //     else if(dirProjectile.Y == 1 && dirProjectile.X == 1 || dirProjectile.Y == -1 && dirProjectile.X == -1)
+        //     {
+        //         Raylib.DrawTexture(projectileLeftUp, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
+        //     }
+        //     else if(dirProjectile.Y == 1 && dirProjectile.X == -1 || dirProjectile.Y == -1 && dirProjectile.X == 1)
+        //     {
+        //         Raylib.DrawTexture(projectileRightUp, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
+        //     }
+        // }
+
+        foreach (Projectile p in projects)
         {
-            if(dirProjectile.Y != 0 && dirProjectile.X == 0)
-            {
-                Raylib.DrawTexture(projectileUp, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
-            }
-            else if(dirProjectile.Y == 0 && dirProjectile.X != 0)
-            {
-                Raylib.DrawTexture(projectileSide, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
-            }
-            else if(dirProjectile.Y == 1 && dirProjectile.X == 1 || dirProjectile.Y == -1 && dirProjectile.X == -1)
-            {
-                Raylib.DrawTexture(projectileLeftUp, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
-            }
-            else if(dirProjectile.Y == 1 && dirProjectile.X == -1 || dirProjectile.Y == -1 && dirProjectile.X == 1)
-            {
-                Raylib.DrawTexture(projectileRightUp, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
-            }
+            p.Draw();
         }
 
     }

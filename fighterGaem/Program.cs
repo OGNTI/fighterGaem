@@ -37,15 +37,12 @@ Texture2D projectileRightUp = Raylib.LoadTexture("img/tracerRightDownLeft.png");
 Texture2D projectileLeftUp = Raylib.LoadTexture("img/tracerLeftDownRight.png");
 Texture2D projectileSide = Raylib.LoadTexture("img/tracerRightLeft.png");
 Rectangle projectileRect = new Rectangle(planeRect.x, planeRect.y, projectileUp.width, projectileUp.height);
-int projectileSpeed = 10;
-Vector2 dirProjectile = Vector2.UnitX;
 
 int speed = 5;
 string currentScene = "start";
 Vector2 dir = Vector2.UnitX;
 
-List<Projectile> projects = new List<Projectile>();
-
+List<Projectile> projectiles = new List<Projectile>();
 
 while (!Raylib.WindowShouldClose())
 {
@@ -109,13 +106,11 @@ while (!Raylib.WindowShouldClose())
         // attack
         if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT))
         {
-            projects.Add(new Projectile(projectileRect));
-            dirProjectile.X = dir.X;
-            dirProjectile.Y = dir.Y;
+            projectiles.Add(new Projectile(projectileRect, Vector2.Normalize(dir)));
         }
-        foreach (Projectile p in projects)
+        foreach (Projectile p in projectiles)
         {
-            p.rect.y += projectileSpeed * dirProjectile.Y;
+            p.Update();
         }
 
     }
@@ -209,7 +204,7 @@ while (!Raylib.WindowShouldClose())
         //     }
         // }
 
-        foreach (Projectile p in projects)
+        foreach (Projectile p in projectiles)
         {
             p.Draw();
         }

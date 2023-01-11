@@ -13,7 +13,6 @@ using System.Numerics;
 // wanted features:
 // not being able to do 180 degree turn, do two 90 degree (four 45 degree), which happens when holding s/d then pressing w/a
 // having the direction you're going take priorty over the opposite, basically if w is pressed while s is held then w take priorty but s was held before, because of if statements
-// if all keys released, plaen keeps going the last direction it was going
 
 
 Rectangle screen = new Rectangle(0, 0, 1000, 1000);
@@ -100,18 +99,20 @@ while (!Raylib.WindowShouldClose())
             dir.Y = 0;
             dir.X = +1;
         }
-        backRect.y -= dir.Y * speed;
-        backRect.x -= dir.X * speed;
+        Vector2 dir0 = Vector2.Normalize(dir);
+        backRect.y -= dir0.Y * speed;
+        backRect.x -= dir0.X * speed;
 
         // attack
-        if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT))
+        if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT) || Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
         {
-            projectiles.Add(new Projectile(projectileRect, Vector2.Normalize(dir)));
+            projectiles.Add(new Projectile(projectileRect, dir0));
         }
         foreach (Projectile p in projectiles)
         {
             p.Update();
         }
+        projectiles.RemoveAll(p => p.rect.x > screen.width || p.rect.x + p.rect.width < 0 || p.rect.y > screen.height || p.rect.y + p.rect.height < 0);
 
     }
     else if (currentScene == "end")
@@ -154,55 +155,34 @@ while (!Raylib.WindowShouldClose())
         {
             Raylib.DrawTexture(planeUpLeft, (int)planeRect.x, (int)planeRect.y, Color.WHITE);
         }
-        else if (dir.Y == -1 && dir.X == 1)
+        else if (dir.Y < 0 && dir.X > 0)
         {
             Raylib.DrawTexture(planeUpRight, (int)planeRect.x, (int)planeRect.y, Color.WHITE);
         }
-        else if (dir.Y == 1 && dir.X == -1)
+        else if (dir.Y > 0 && dir.X < 0)
         {
             Raylib.DrawTexture(planeDownLeft, (int)planeRect.x, (int)planeRect.y, Color.WHITE);
         }
-        else if (dir.Y == 1 && dir.X == 1)
+        else if (dir.Y > 0 && dir.X > 0)
         {
             Raylib.DrawTexture(planeDownRight, (int)planeRect.x, (int)planeRect.y, Color.WHITE);
         }
-        else if (dir.Y == -1 && dir.X == 0) // vertical / horizontal
+        else if (dir.Y < 0 && dir.X == 0) // vertical / horizontal
         {
             Raylib.DrawTexture(plane, (int)planeRect.x, (int)planeRect.y, Color.WHITE);
         }
-        else if (dir.Y == 1 && dir.X == 0)
+        else if (dir.Y > 0 && dir.X == 0)
         {
             Raylib.DrawTexture(planeDown, (int)planeRect.x, (int)planeRect.y, Color.WHITE);
         }
-        else if (dir.Y == 0 && dir.X == -1)
+        else if (dir.Y == 0 && dir.X < 0)
         {
             Raylib.DrawTexture(planeLeft, (int)planeRect.x, (int)planeRect.y, Color.WHITE);
         }
-        else if (dir.Y == 0 && dir.X == 1)
+        else if (dir.Y == 0 && dir.X > 0)
         {
             Raylib.DrawTexture(planeRight, (int)planeRect.x, (int)planeRect.y, Color.WHITE);
         }
-
-        // attack grafik
-        // if (showProjectile == 1)
-        // {
-        //     if(dirProjectile.Y != 0 && dirProjectile.X == 0)
-        //     {
-        //         Raylib.DrawTexture(projectileUp, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
-        //     }
-        //     else if(dirProjectile.Y == 0 && dirProjectile.X != 0)
-        //     {
-        //         Raylib.DrawTexture(projectileSide, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
-        //     }
-        //     else if(dirProjectile.Y == 1 && dirProjectile.X == 1 || dirProjectile.Y == -1 && dirProjectile.X == -1)
-        //     {
-        //         Raylib.DrawTexture(projectileLeftUp, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
-        //     }
-        //     else if(dirProjectile.Y == 1 && dirProjectile.X == -1 || dirProjectile.Y == -1 && dirProjectile.X == 1)
-        //     {
-        //         Raylib.DrawTexture(projectileRightUp, (int)projectileRect.x, (int)projectileRect.y, Color.WHITE);
-        //     }
-        // }
 
         foreach (Projectile p in projectiles)
         {

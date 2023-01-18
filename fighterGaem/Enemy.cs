@@ -29,6 +29,7 @@ public class Enemy
 
         missileUp = Raylib.LoadTexture("img/missileUp.png");
 
+        // randomize side which enemy spawns at
         int startSide = generator.Next(1, 5);
         if (startSide == 1)
         {
@@ -54,8 +55,9 @@ public class Enemy
         rect = new Rectangle(startX, startY, missileUp.width, missileUp.height);
     }
 
-    public int Update(Rectangle planeRect, int screenWidth, int screenHeight)
+    public void Update(Rectangle planeRect, int screenWidth, int screenHeight)
     {
+        // move towards middle
         if (rect.x > screenWidth / 2 - rect.width / 2)
         {
             rect.x -= speed;
@@ -73,17 +75,7 @@ public class Enemy
             rect.y += speed;
         }
 
-        if (rect.x + rect.width / 2 > planeRect.x && rect.x + rect.width / 2 < planeRect.x + planeRect.width && rect.y + rect.height / 2 > planeRect.y && rect.y + rect.height / 2 < planeRect.y + planeRect.height)
-        {
-            state = 1;
-        }
-
-        return state;
-    }
-
-    public void Draw(int screenWidth, int screenHeight)
-    {
-
+        // find out direction
         if (rect.x > screenWidth / 2 - rect.width / 2 + 20)
         {
             xDirection = "left";
@@ -101,7 +93,17 @@ public class Enemy
             yDirection = "down";
         }
 
+        // check for contact with plane
+        if (rect.x + rect.width / 2 > planeRect.x && rect.x + rect.width / 2 < planeRect.x + planeRect.width && rect.y + rect.height / 2 > planeRect.y && rect.y + rect.height / 2 < planeRect.y + planeRect.height)
+        {
+            state = 1;
+        }
 
+    }
+
+    public void Draw(int screenWidth, int screenHeight)
+    {
+        // draw dependent on direction
         if (xDirection == "left" && yDirection == "up")
         {
             Raylib.DrawTexture(missileUpLeft, (int)rect.x, (int)rect.y, Color.WHITE);

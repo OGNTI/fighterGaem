@@ -1,0 +1,67 @@
+37. while window shouldn't close
+	do everything beneath
+
+if currently in the start scene
+	move background down
+	set dir to values which make the plane keep going the same direction it does in start scene after leaving it
+
+	if enter is pressed
+		change scene to game
+
+if current scene is game
+	keep track of how many loops have been done
+	
+	if keyboard keys WASD are pressed move in their directions
+		normalise the vector to make all directions equal not diagonals not being hypotenuses.
+		apply speed and direction to actual background position
+
+	if left mouse or space is pressed
+		add projectile class to projectile list
+	for each projectile class in the list
+		move in their respective directions with the applied speed
+	remove all projectiles in the list if their position is pretty much outside the screen
+
+	if the amount of loops done is equal to the selected time to spawn in enemy
+		add enemy class to enemy list
+		increase spawn time with 3 seconds times the amount of target fps
+	for each enemy class in the enemy list
+		move towards the middle of the screen and check if they're in contanct with the plane, if in contact with plane, state == 1
+	remove all enemies in the list if their state is == 1
+
+if current scene is end
+	
+
+
+if the top of the background comes into frame
+	move it up again with it's bottom at the bottom of the screen
+same but if the bottom comes into frame
+	move back down
+same but on y axis
+	move back
+again same but other side of the y axis
+	move back
+
+
+
+begind drawing graphic
+clear screen to remove previous frames
+draw background
+
+if current scene is start
+	draw plane
+	draw text
+
+if current scene is game
+	draw plane with different images depending on current direction
+
+	for each projectile class in projectile list 
+		draw their respective textures, depending on direction
+	for each enemy class in enemy list
+		draw respective textures depending on direction
+
+if current scene is end
+
+if current scene is neither start, game or end
+	draw text saying error
+
+stop drawing graphics

@@ -25,13 +25,15 @@ public class Projectile
 
     public void Update()
     {
+        // move in direction with speed
         rect.x += direction.X * speed;
         rect.y += direction.Y * speed;
     }
 
     public void Draw()
     {
-        if (direction.Y < 0 && direction.X < 0) // Diagonal
+        // draw dependent on projectile direction
+        if (direction.Y < 0 && direction.X < 0)
         {
             Raylib.DrawTexture(projectileUpLeft, (int)rect.x, (int)rect.y, Color.WHITE);
         }
@@ -47,7 +49,7 @@ public class Projectile
         {
             Raylib.DrawTexture(projectileUpLeft, (int)rect.x, (int)rect.y, Color.WHITE);
         }
-        else if (direction.Y < 0 && direction.X == 0) // vertical/horizontal
+        else if (direction.Y < 0 && direction.X == 0)
         {
             Raylib.DrawTexture(projectileUp, (int)rect.x, (int)rect.y, Color.WHITE);
         }

@@ -9,9 +9,9 @@ public class Projectile
     Texture2D ProjectileRight;
     Texture2D projectileUpRight;
     Texture2D projectileUpLeft;
-    
+
     Vector2 direction;
-    int speed = 20;
+    int speed = 17;
 
     public Projectile(Rectangle projectileRect, Vector2 dir)
     {
@@ -47,7 +47,7 @@ public class Projectile
         {
             Raylib.DrawTexture(projectileUpLeft, (int)rect.x, (int)rect.y, Color.WHITE);
         }
-        else if (direction.Y < 0 && direction.X == 0) // vertical / horizontal
+        else if (direction.Y < 0 && direction.X == 0) // vertical/horizontal
         {
             Raylib.DrawTexture(projectileUp, (int)rect.x, (int)rect.y, Color.WHITE);
         }

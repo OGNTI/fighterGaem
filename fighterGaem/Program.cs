@@ -1,7 +1,6 @@
 ﻿using Raylib_cs;
 using System.Numerics;
 
-// Initial Idea:
 // landscape as background, moves according to plaen direction
 // still plaen with different textures depending on direction
 // plaen shoot tracing rounds
@@ -10,7 +9,6 @@ using System.Numerics;
 // texture for being hit/crash, explosion on missile death
 // dropping bombs on bases/airfields? some amount of bases, randomly scattered, outside ceratin distance of each other
 
-// wanted features:
 // not being able to do 180 degree turn, do two 90 degree (four 45 degree), which happens when holding s/d then pressing w/a
 // having the direction you're going take priorty over the opposite, basically if w is pressed while s is held then w take priorty but s was held before, because of if statements
 
@@ -42,6 +40,10 @@ string currentScene = "start";
 Vector2 dir = Vector2.UnitX;
 
 List<Projectile> projectiles = new List<Projectile>();
+List<Enemy> enemies = new List<Enemy>();
+
+int timer = 0;
+int enemyTimer = 100;
 
 while (!Raylib.WindowShouldClose())
 {
@@ -58,6 +60,8 @@ while (!Raylib.WindowShouldClose())
     }
     else if (currentScene == "game")
     {
+        timer++;
+
         // Movement
         if (Raylib.IsKeyDown(KeyboardKey.KEY_W) && Raylib.IsKeyDown(KeyboardKey.KEY_A))
         {
@@ -114,6 +118,19 @@ while (!Raylib.WindowShouldClose())
         }
         projectiles.RemoveAll(p => p.rect.x > screen.width || p.rect.x + p.rect.width < 0 || p.rect.y > screen.height || p.rect.y + p.rect.height < 0);
 
+
+        if (timer == enemyTimer)
+        {
+            enemies.Add(new Enemy((int)screen.width, (int)screen.height, dir0));
+            enemyTimer += 3 * 60;
+        }
+        foreach (Enemy e in enemies)
+        {
+            e.Update(planeRect, (int)screen.width, (int)screen.height);
+        }
+        enemies.RemoveAll(e => e.state == 1);
+
+
     }
     else if (currentScene == "end")
     {
@@ -167,7 +184,7 @@ while (!Raylib.WindowShouldClose())
         {
             Raylib.DrawTexture(planeDownRight, (int)planeRect.x, (int)planeRect.y, Color.WHITE);
         }
-        else if (dir.Y < 0 && dir.X == 0) // vertical / horizontal
+        else if (dir.Y < 0 && dir.X == 0) // vertical/horizontal
         {
             Raylib.DrawTexture(plane, (int)planeRect.x, (int)planeRect.y, Color.WHITE);
         }
@@ -187,6 +204,10 @@ while (!Raylib.WindowShouldClose())
         foreach (Projectile p in projectiles)
         {
             p.Draw();
+        }
+        foreach (Enemy e in enemies)
+        {
+            e.Draw((int)screen.width, (int)screen.height);
         }
 
     }
